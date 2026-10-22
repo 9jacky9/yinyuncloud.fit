@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小火箭（Shadowrocket）节点分组与自动测速故障切换技巧 - 隐云机场</title>
+  <meta name="description" content="深入掌握iOS平台Shadowrocket（小火箭）的高级配置指南，详解URL-Test自动优选组、Fallback故障转移与场景化规则自动化。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="mach-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="隐云机场首页">
+        <svg viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" />
+              <stop offset="50%" stop-color="#2563eb" />
+              <stop offset="100%" stop-color="#1e3a8a" />
+            </linearGradient>
+            <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="60%" stop-color="#cbd5e1" />
+              <stop offset="100%" stop-color="#60a5fa" />
+            </linearGradient>
+          </defs>
+          <path d="M4 32L24 8L38 8L22 32H4Z" fill="url(#wingGrad)" />
+          <path d="M18 32L36 12L46 12L30 32H18Z" fill="#06b6d4" fill-opacity="0.6" />
+          <path d="M2 34H48L42 37H0L2 34Z" fill="#60a5fa" />
+          <text x="52" y="27" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="url(#metalGrad)" letter-spacing="1">隐云机场</text>
+        </svg>
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html#features" class="nav-link">性能矩阵</a></li>
+        <li><a href="index.html#capabilities" class="nav-link">影音与AI</a></li>
+        <li><a href="index.html#pricing" class="nav-link">订阅资费</a></li>
+        <li><a href="index.html#testimonials" class="nav-link">实测口碑</a></li>
+        <li><a href="index.html#faq" class="nav-link">常见解答</a></li>
+        <li><a href="speed-briefings.html" class="nav-link" style="color:#38bdf8;">极速前哨</a></li>
+      </ul>
+      <div class="header-actions">
+        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="btn-header">即刻登机</a>
+        <button class="nav-toggle" aria-label="切换导航菜单" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="article-header">
+    <div class="container">
+      <div class="article-meta-bar">
+        <span>归档：移动端调优</span>
+        <span>•</span>
+        <span>发布日期：2026-10-16</span>
+        <span>•</span>
+        <span>阅读时长：约 5 分钟</span>
+      </div>
+      <h1 class="article-h1-title">小火箭（Shadowrocket）节点分组与自动测速故障切换技巧</h1>
+      <p class="article-lead-p">
+        在移动设备上使用代理时，很多人习惯于在列表里手动翻找节点、逐个测速并手动切换。然而在电梯、地铁或移动网络与 Wi-Fi 频繁交替的动态环境下，手动切换不仅耗时耗力，更极易打断正在进行的通话或视频会议。
+      </p>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="article-body-wrapper">
+      <article class="article-rich-content">
+        <h2>面对数十个节点，如何避免手动测速切换的繁琐？</h2>
+        <p>
+          现代成熟的加速服务往往会提供包含香港、日本、新加坡、欧美等在内的数十条优质专线。如果仅仅通过单一固定节点上网，一旦该节点进行例行机房维护或偶发丢包，用户手机就会直接陷入“断网”状态。
+        </p>
+        <h3>负载均衡与自动优选组（URL-Test）底层逻辑</h3>
+        <p>
+          在 Shadowrocket（俗称“小火箭”）中，可以通过“服务器策略组”功能创建一个类型为 <strong>URL-Test（自动测速）</strong> 的智能策略组。
+        </p>
+        <p>
+          该策略组会在后台以极低的资源开销定期向设定的基准测试地址（如 <code>http://www.gstatic.com/generate_204</code>）发起轻量探针请求，并自动将所有出站流量路由至当前往返延迟最低的可用节点上。用户完全无需关心哪个节点最快，软件已在底层实现毫秒级自适应调优。
+        </p>
+
+        <h2>配置故障回退组（Fallback）实现无缝容灾</h2>
+        <p>
+          虽然 URL-Test 擅长优选最快节点，但在高可靠性场景下，<strong>Fallback（故障回退策略组）</strong> 表现更为稳健。
+        </p>
+        <h3>设置合理的测试间隔与延时阈值</h3>
+        <p>
+          Fallback 组严格按照用户设定的节点排列顺序进行优先级探测。只要排在首位的香港主用专线保持畅通，流量便始终保持在低延迟主干上；一旦首选节点发生物理中断，系统便在 1 秒内无感顺延至东京或新加坡备用节点。参考知名测评指南 <a href="https://tizilab.net/" target="_blank">稳定好用的梯子工具汇总</a> 的建议：将检测周期设为 300 秒，不仅能避免因网络瞬时微抖动导致频繁换 IP，还能极大节省手机电池电量。
+        </p>
+
+        <h2>场景与Wi-Fi环境自动化策略进阶</h2>
+        <p>
+          除了节点组自动切换，Shadowrocket 还支持深度的“场景自动化”（On Demand / Wi-Fi 策略）：
+        </p>
+        <ul>
+          <li><strong>连接特定家庭 Wi-Fi 时自动关闭代理：</strong>如果家中主路由器已经部署了全屋科学上网透明网关，可以让手机小火箭进入特定 Wi-Fi 后自动休眠，杜绝双层代理嵌套带来的性能损耗；</li>
+          <li><strong>切换至蜂窝移动网络时自动激活连接：</strong>一旦离开家门，小火箭自动在后台拉起专线守护，时刻保障外网移动办公平稳。</li>
+        </ul>
+        <h3>出行与家庭路由器环境自动策略切换</h3>
+        <p>
+          通过将“按需求连接”（Connect On Demand）与分流规则深度绑定，可以让 iOS 设备实现真正的全场景免干预自愈，出差漫游如履平地。
+        </p>
+
+        <h2>保持iOS全天候平稳代理的经验之谈</h2>
+        <p>
+          很多用户抱怨手机耗电快，往往是因为订阅中包含了大量失效的垃圾节点导致客户端在后台持续陷入死循环握手。建议每隔一到两周在小火箭中执行一次“更新订阅”，清除过期测试节点。掌握了自动优选组与故障回退这两项核心技能，您的 iPhone 与 iPad 就能以最优雅的姿态，全天候静默享受高速专线带来的无界连接。
+        </p>
+      </article>
+
+      <div class="post-back-bar">
+        <a href="speed-briefings.html" style="text-decoration:none;font-weight:700;">&larr; 返回极速前哨列表</a>
+        <a href="flight-ping-benchmark.html" style="text-decoration:none;font-weight:700;">回到第一篇：2026跨境专线延迟大起底 &rarr;</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mach-footer">
+    <div class="container">
+      <ul class="footer-nav">
+        <li><a href="sitemap.html">网站地图</a></li>
+        <li><a href="about.html">关于我们</a></li>
+        <li><a href="terms.html">服务条款</a></li>
+        <li><a href="privacy.html">隐私政策</a></li>
+      </ul>
+    </div>
+  </footer>
+  <script src="nav.js" defer></script>
+</body>
+</html>

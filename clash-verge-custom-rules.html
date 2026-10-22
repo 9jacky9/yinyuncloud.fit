@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>告别断流转圈：Clash Verge Rev进阶分流规则调校指南 - 隐云机场</title>
+  <meta name="description" content="针对Clash Verge Rev客户端的高阶分流调优手册，详解Mihomo内核、TUN虚拟网卡配置、DNS防污染以及定制规则集实战技巧。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="mach-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="隐云机场首页">
+        <svg viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" />
+              <stop offset="50%" stop-color="#2563eb" />
+              <stop offset="100%" stop-color="#1e3a8a" />
+            </linearGradient>
+            <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="60%" stop-color="#cbd5e1" />
+              <stop offset="100%" stop-color="#60a5fa" />
+            </linearGradient>
+          </defs>
+          <path d="M4 32L24 8L38 8L22 32H4Z" fill="url(#wingGrad)" />
+          <path d="M18 32L36 12L46 12L30 32H18Z" fill="#06b6d4" fill-opacity="0.6" />
+          <path d="M2 34H48L42 37H0L2 34Z" fill="#60a5fa" />
+          <text x="52" y="27" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="url(#metalGrad)" letter-spacing="1">隐云机场</text>
+        </svg>
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html#features" class="nav-link">性能矩阵</a></li>
+        <li><a href="index.html#capabilities" class="nav-link">影音与AI</a></li>
+        <li><a href="index.html#pricing" class="nav-link">订阅资费</a></li>
+        <li><a href="index.html#testimonials" class="nav-link">实测口碑</a></li>
+        <li><a href="index.html#faq" class="nav-link">常见解答</a></li>
+        <li><a href="speed-briefings.html" class="nav-link" style="color:#38bdf8;">极速前哨</a></li>
+      </ul>
+      <div class="header-actions">
+        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="btn-header">即刻登机</a>
+        <button class="nav-toggle" aria-label="切换导航菜单" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="article-header">
+    <div class="container">
+      <div class="article-meta-bar">
+        <span>归档：客户端进阶</span>
+        <span>•</span>
+        <span>发布日期：2026-10-18</span>
+        <span>•</span>
+        <span>阅读时长：约 6 分钟</span>
+      </div>
+      <h1 class="article-h1-title">告别断流转圈：Clash Verge Rev进阶分流规则调校指南</h1>
+      <p class="article-lead-p">
+        随着开源社区的快速迭代，基于现代跨平台架构的 Clash Verge Rev 已经成为桌面端最受追捧的网络调度利器。然而，许多用户仅停留在“导入即用”的初级阶段，一旦规则出现冲突，便容易遭遇国内网页加载迟缓、流媒体走错节点等困扰。
+      </p>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="article-body-wrapper">
+      <article class="article-rich-content">
+        <h2>从Clash到Clash Verge Rev：内核迭代与性能突破</h2>
+        <p>
+          早期版本的 Clash 核心在面对当今复杂的高并发多媒体流与现代加密协议时逐渐显现出瓶颈。而 Clash Verge Rev 采用了当下最为活跃且性能强劲的 <strong>Mihomo（原 Clash.Meta）内核</strong>，彻底重构了底层数据转发管线。
+        </p>
+        <h3>Meta内核对现代加密协议的原生支持</h3>
+        <p>
+          Mihomo 内核原生支持包括 Vless-Reality、Hysteria2、Tuic 在内的最新抗封锁传输协议，并在内存开销、连接复用以及 DNS 智能调度上实现了成倍的吞吐提升。即便在多达数十个连接同时发起的极速场景下，CPU 占用率依旧能够维持在极低水准。
+        </p>
+
+        <h2>打造零污染的智能分流规则集</h2>
+        <p>
+          分流的核心目标是：<strong>内网通信绝对直连、隐私数据本地解析、跨境访问精准走专线</strong>。很多用户遇到的“开代理国内网速变慢”，根本原因在于不合理的分流规则将国内大流量请求绕行到了海外节点。
+        </p>
+        <h3>国内直连与国外代理的无缝分流配置</h3>
+        <p>
+          在 Clash Verge Rev 中，建议使用基于 <code>geosite</code> 与 <code>geoip</code> 数据库的现代分流架构：
+        </p>
+        <ul>
+          <li><strong>geosite:cn 与 geoip:cn：</strong>强制设置为 <code>DIRECT</code>（直连），确保微信、淘宝、百度、哔哩哔哩等本地服务直接跑满本地运营商宽带；</li>
+          <li><strong>geosite:category-ads-all：</strong>配置为 <code>REJECT</code>，在底层网络包级别精准拦截商业广告与追踪脚本，显著提升网页加载速度；</li>
+          <li><strong>MATCH：</strong>兜底规则建议设置为默认代理组，避免未知海外冷门站点漏跑直连导致无法访问。</li>
+        </ul>
+        <h3>针对AI模型与流媒体的专属规则组定义</h3>
+        <p>
+          对于需要特定原生 IP 的 OpenAI、Claude 或 Netflix，切忌将其与普通网页代理混在同一策略组中。建议建立独立的“人工智能”与“国际视听”策略组，并指定到纯净度最高的固定专线节点。参考 <a href="https://tizilab.net/" target="_blank">梯子实验室最新教程</a> 提供的规则集模板，能够有效避免因 IP 频繁飘移触发平台的安全风控。
+        </p>
+
+        <h2>TUN虚拟网卡模式与全局接管避坑指南</h2>
+        <p>
+          对于不遵循系统代理设置的专业软件（如部分游戏、终端开发工具、特定同步客户端），开启 <strong>TUN 模式</strong>是实现全流量接管的最优解。
+        </p>
+        <h3>DNS防泄漏与Fake-IP工作原理解析</h3>
+        <p>
+          在 TUN 模式下，务必启用 <strong>Fake-IP 模式</strong>。客户端在收到本地 DNS 解析请求时，会立即返回一个预先分配的内网虚拟 IP（如 198.18.0.x），真正的域名解析被推迟到远端专线服务器执行。这种机制不仅将域名解析建立延迟缩减至 0ms，更从物理机制上彻底终结了本地运营商针对 DNS 的嗅探与污染。
+        </p>
+
+        <h2>高效稳定的日常代理维护心得</h2>
+        <p>
+          最后建议大家在软件设置中开启“自动更新 GeoIP/GeoSite 数据库”选项（建议设置为每周更新一次），定期同步最新的国内外域名资产划分。一套调校得当的分流系统，不仅能让海外高速专线各尽其用，更能让本地生活工作保持原汁原味的极速体验。
+        </p>
+      </article>
+
+      <div class="post-back-bar">
+        <a href="speed-briefings.html" style="text-decoration:none;font-weight:700;">&larr; 返回极速前哨列表</a>
+        <a href="mac-terminal-proxy-workflow.html" style="text-decoration:none;font-weight:700;">阅读下一篇：macOS终端全局加速方案 &rarr;</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mach-footer">
+    <div class="container">
+      <ul class="footer-nav">
+        <li><a href="sitemap.html">网站地图</a></li>
+        <li><a href="about.html">关于我们</a></li>
+        <li><a href="terms.html">服务条款</a></li>
+        <li><a href="privacy.html">隐私政策</a></li>
+      </ul>
+    </div>
+  </footer>
+  <script src="nav.js" defer></script>
+</body>
+</html>
